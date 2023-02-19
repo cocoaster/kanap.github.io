@@ -1,6 +1,9 @@
 let productData = [];
-let pageUrl = location.href;
-console.log(pageUrl);
+
+// let pageUrl = location.href;
+// console.log(pageUrl);
+
+// Ciblage des éléments de la page
 const titleHeaderLocation = document.querySelector("head > title");
 const imgLocation = document.querySelector(".item__img");
 console.log(imgLocation);
@@ -9,6 +12,7 @@ const priceLocation = document.getElementById("price");
 const descriptionLocation = document.getElementById("description");
 const colorsLocation = document.getElementById("colors");
 
+// Récupération de l'id du produit sélectionné
 const urlIdSelected = window.location.search;
 console.log(urlIdSelected);
 
@@ -20,7 +24,6 @@ const id = url.get("id");
 console.log(id);
 
 // Appeler le produit sélectionné dans l'API
-
 const fetchProduct = async () => {
   await fetch(`http://localhost:3000/api/products/${id}`)
     .then((res) => res.json())
@@ -31,7 +34,6 @@ const fetchProduct = async () => {
 fetchProduct();
 
 // Afficher le produit est ses caractéritiques
-
 async function productDisplay() {
   await fetchProduct();
   console.log(productData.name);
@@ -75,9 +77,6 @@ async function productDisplay() {
 productDisplay();
 
 //envoyer la sélection dans le local strorage et renvoyer vers le panier après validation
-
-// let quantity = quantity.value;
-
 document
   .getElementById("addToCart")
   .addEventListener("click", () => ProductsValues());
@@ -89,7 +88,7 @@ const ProductsValues = (values) => {
     id: `${id}`,
   };
 
-  //ajout des produits dans le local storage
+  //Ajout des produits dans le local storage
   const addedProducts = JSON.parse(localStorage.getItem("products")) || [];
 
   const existingProductIndex = addedProducts.findIndex(

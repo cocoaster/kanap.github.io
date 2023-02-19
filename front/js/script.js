@@ -1,11 +1,13 @@
 let productData = [];
 
+// Récupération des produits stockésdans l'API
 const fetchProduct = async () => {
   await fetch("http://localhost:3000/api/products")
     .then((res) => res.json())
     .then((data) => (productData = data));
 };
 
+// Affichage des produits sur la page
 const productDisplay = async () => {
   await fetchProduct();
   console.log(productData[0]);
@@ -25,6 +27,4 @@ const productDisplay = async () => {
     .join("");
 };
 productDisplay();
-// producstArray.addEventListener("click", (e) => {
-//   fetchProducts().then(() => productsDisplay());
-// });
+
