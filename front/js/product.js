@@ -17,9 +17,10 @@ const urlIdSelected = window.location.search;
 console.log(urlIdSelected);
 
 const urlIdSelectedSliced = urlIdSelected.slice(1);
+console.log(urlIdSelectedSliced);
 
 const url = new URLSearchParams(urlIdSelected);
-
+console.log(url);
 const id = url.get("id");
 console.log(id);
 

@@ -155,21 +155,21 @@ const errorDisplay = (tag, message, valid) => {
     } else {
       errorP.textContent = message;
     }
-  }, 1000);
+  }, 500);
 };
 
 // Mise en place des conditions de validation des champs du formulaire
 const firstNameChecker = (value) => {
-  if (value.length < 1) {
-    errorDisplay("firstName", "Ce champs doit être complété");
-    firstName = null;
-  } else if (!value.match(/^[a-zA-ZÀ-ÿ'-]+$/)) {
-    errorDisplay("firstName", "Ce champs ne doit pas contenir de nombre");
-    firstName = null;
-  } else if (!value.match(/^[a-zA-ZÀ-ÖØ-öø-ÿ'-~]+$/)) {
+  if (value.length > 48) {
     errorDisplay(
       "firstName",
-      "Ce champs ne doit pas contenir de nombre ni de caractères spéciaux autres que les - et les '"
+      "Ce champs doit comporter moins de 48 caractères"
+    );
+    firstName = null;
+  } else if (!value.match(/^[a-zA-Z'-]*$/)) {
+    errorDisplay(
+      "firstName",
+      "Ce champs ne doit pas contenir de nombre ni de caractères spéciaux autres que - et '"
     );
     firstName = null;
   } else {
@@ -181,7 +181,7 @@ const lastNameChecker = (value) => {
   if (value.length > 47) {
     errorDisplay("lastName", "Ce champs doit comporter moins de 48 caractères");
     lastName = null;
-  } else if (!value.match(/^[a-zA-ZÀ-ÖØ-öø-ÿ'-~]+$/)) {
+  } else if (!value.match(/^[a-zA-Z'-]*$/)) {
     errorDisplay(
       "lastName",
       "Ce champs ne doit pas contenir de nombre ni de caractères spéciaux autres que les - et les '"
@@ -193,8 +193,11 @@ const lastNameChecker = (value) => {
   }
 };
 const addressChecker = (value) => {
-  if (value.length < 3) {
-    errorDisplay("address", "Ce champs doit comporter au moins 3 caracteres");
+  if (value.length < 3 || value.length > 60) {
+    errorDisplay(
+      "address",
+      "Ce champs doit comporter entre  3 et 60 caracteres"
+    );
     address = null;
   } else if (!value.match(/^[\w\s-/']+$/)) {
     errorDisplay(
@@ -208,8 +211,8 @@ const addressChecker = (value) => {
   }
 };
 const cityChecker = (value) => {
-  if (value.length < 2 && value.length > 60) {
-    errorDisplay("city", "Ce champs doit comporter moins de 48 caractères");
+  if ((value.length > 0 && value.length < 2) || value.length > 48) {
+    errorDisplay("city", "Ce champs doit comporter entre 2 et 48 caractères");
     city = null;
   } else if (!value.match(/^[a-zA-ZÀ-ÿ'-]+$/)) {
     errorDisplay(
