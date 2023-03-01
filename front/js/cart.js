@@ -1,22 +1,51 @@
 // -------------------------Panier --------------------
 
-// Emplacement des éléments à intégrer
+// Emplacement des éléments à intégrer ou à modifier
 const productsLocation = document.getElementById("cart__items");
 console.log(productsLocation);
 const totalLocation = document.getElementById("totalPrice");
+console.log(totalLocation);
+const cartOrderElem = document.querySelector('.cart__order');
 
-//Récupération des produits présents dans le localStorage
-const addedProducts = JSON.parse(localStorage.getItem("products") || []);
-console.log(addedProducts[0].id);
 
-// fonction de requête des données de l'API
-async function fetchProduct() {
-  await fetch(`http://localhost:3000/api/products`)
-    .then((res) => res.json())
-    .then((data) => (productData = data));
-  console.log(productData);
+
+// Récupérer le contenu du localStorage
+const getLocalStorage = localStorage.getItem("products");
+
+
+function emptyCart() {
+  {
+    productsLocation.innerHTML = "<p id = 'emptyCartMsg'>Votre panier est vide</p>";
+    const emptyCartMsgContent = document.getElementById("emptyCartMsg");
+
+    emptyCartMsgContent.style.textAlign = "center";
+    cartOrderElem.style.display = 'none';
+  }
 }
-fetchProduct();
+
+ // Affichage du panier s'il est vide
+ if (getLocalStorage == null) {
+  emptyCart();
+ 
+}
+
+
+
+  //Récupération des produits présents dans le localStorage
+
+  const addedProducts = JSON.parse(localStorage.getItem("products") || []);
+
+
+
+  // fonction de requête des données de l'API
+  async function fetchProduct() {
+    await fetch(`http://localhost:3000/api/products`)
+      .then((res) => res.json())
+      .then((data) => (productData = data));
+    console.log(productData);
+  }
+  fetchProduct();
+
 
 // Fusion des données de l'API et du local storage
 let datas = [];
@@ -37,7 +66,17 @@ async function mergeApiAndLocalData() {
 }
 mergeApiAndLocalData();
 
-// console.log(JSON.parse(datas[0].color));
+
+// Fonction de calcul du panier 
+function calculPrice () {
+  let total = 0;
+
+  for (let i = 0; i < datas.length; i++) {
+    total += datas[i].price * datas[i].quantity;
+  }
+  console.log(total);
+  totalLocation.innerHTML = ` ${total}`;
+}
 
 // Fonction d'affichage des produits
 async function productDisplay() {
@@ -76,13 +115,7 @@ async function productDisplay() {
         </div>
       </article>`;
     productsLocation.innerHTML = basketContent;
-
-    // Calcul du prix total et ajout du total dans la page
-    let total = 0;
-    for (let i = 0; i < datas.length; i++) {
-      total += datas[i].price * datas[i].quantity;
-    }
-    totalLocation.innerHTML = ` ${total}`;
+    calculPrice ()
   }
 }
 productDisplay();
@@ -104,40 +137,77 @@ setTimeout(() => {
     inputLocation[i].addEventListener("change", function () {
       let newQuantity = Number(this.value);
       for (let j = 0; j < addedProducts.length; j++) {
-        if (
-          addedProducts[j].id === dataId &&
-          addedProducts[j].color === dataColor
-        ) {
+        if (addedProducts[j].id === dataId && addedProducts[j].color === dataColor) {
           addedProducts[j].quantity = newQuantity;
+
+          if (newQuantity < 1 || newQuantity > 100) {
+            alert("Veuillez sélectionner une quantité entre 1 et 100.");
+            // remettre l'ancienne valeur si la quantité n'est pas comprise entre 1 et 100
+            this.value = datas.find(item => item.id === dataId && item.color === dataColor).quantity;
+            return; // Quitter eventListener
+          }
           localStorage.setItem("products", JSON.stringify(addedProducts));
+  
+          // Mise à jour de datas
+          for (let k = 0; k < datas.length; k++) {
+            if (datas[k].id === dataId && datas[k].color === dataColor) {
+              datas[k].quantity = newQuantity;
+              break;
+            }
+          }
+          calculPrice();
+       
+          console.log(totalLocation);
+          
+
         }
       }
     });
   }
+
+  // Suppression d'un article
   for (let i = 0; i < deleteButtonLocation.length; i++) {
-    deleteButtonLocation[i].addEventListener("click", function () {
+    deleteButtonLocation[i].addEventListener("click", function deleteProduct() {
       const article = this.closest(".cart__item");
       const dataId = article.dataset.id;
       const dataColor = article.dataset.color;
 
       // Boucle sur les produits ajoutés pour trouver celui à supprimer
       for (let j = 0; j < datas.length; j++) {
-        if (datas[j].id === dataId && datas[j].color === dataColor) {
+        if (datas[j].id === dataId && datas[j].color === dataColor ) {
           // Supprime l'article correspondant du tableau
           datas.splice(j, 1);
+          localStorage.setItem("products", JSON.stringify(addedProducts));
+
+          calculPrice();
+          console.log(datas);
+
           break;
         }
+       
       }
+
       // Mettre à jour les données du localStorage
       localStorage.setItem("products", JSON.stringify(datas));
+      if ( datas.length === 0) { 
+
+        localStorage.removeItem("products");
+        emptyCart();
+      
+      }
 
       // Supprimer visuellement l'article du panier
       article.remove();
+      calculPrice();
     });
   }
 }, 2000);
 
+// Fonction de vidage du local Storage si le panier est vide 
+
+
 // ---------------------Formulaire---------------------
+
 const form = document.querySelector("form");
 const inputs = document.querySelectorAll(
   'input[type="text"], input[type="email"]'
@@ -150,8 +220,9 @@ let firstName, lastName, address, city, email;
 const errorDisplay = (tag, message, valid) => {
   setTimeout(() => {
     const errorP = document.getElementById(tag + "ErrorMsg");
-    if (!valid) {
+    if (!valid ) {
       errorP.textContent = message;
+
     } else {
       errorP.textContent = message;
     }
@@ -177,6 +248,7 @@ const firstNameChecker = (value) => {
     firstName = value;
   }
 };
+
 const lastNameChecker = (value) => {
   if (value.length > 47) {
     errorDisplay("lastName", "Ce champs doit comporter moins de 48 caractères");
@@ -192,6 +264,7 @@ const lastNameChecker = (value) => {
     lastName = value;
   }
 };
+
 const addressChecker = (value) => {
   if (value.length > 60) {
     errorDisplay(
@@ -210,6 +283,7 @@ const addressChecker = (value) => {
     address = value;
   }
 };
+
 const cityChecker = (value) => {
   if (value.length > 48) {
     errorDisplay("city", "Ce champs doit comporter entre 2 et 48 caractères");
@@ -237,6 +311,7 @@ const emailChecker = (value) => {
 };
 
 // Ecoute des valeurs entrées dans le formulaire
+const validateForm = (inputs) => {
 inputs.forEach((input) => {
   input.addEventListener("input", (e) => {
     switch (e.target.id) {
@@ -256,6 +331,7 @@ inputs.forEach((input) => {
     }
   });
 });
+}
 
 // Création de l'array d'_id extrait du local storage pour l'envoi au serveur
 console.log(addedProducts[0].id);
@@ -274,6 +350,8 @@ console.log(products);
 // Soumission du formulaire
 form.addEventListener("submit", (e) => {
   e.preventDefault();
+  validateForm(Array.from(inputs));
+
   if (firstName && lastName && address && city && email) {
     const contact = {
       firstName: firstName,
@@ -292,14 +370,28 @@ form.addEventListener("submit", (e) => {
     inputs.forEach((input) => {
       input.value = "";
     });
-    // firstName = null;
-    // lastName = null;
-    // address = null;
-    // city = null;
-    // email = null;
+  
     sendToServer(toSend);
   } else {
-    alert("Veuillez compléter tous les champs du formulaire");
+    validateForm(inputs);
+    // alert("Veuillez compléter tous les champs du formulaire");
+    // inputs.forEach((input) => {
+    //     switch (e.target.id) {
+    //       case "firstName":
+    //         firstNameChecker(e.target.value);
+    //       case "lastName":
+    //         lastNameChecker(e.target.value);
+    //       case "address":
+    //         addressChecker(e.target.value);
+    //       case "city":
+    //         cityChecker(e.target.value);
+    //       case "email":
+    //         emailChecker(e.target.value);
+    //         break;
+    //       default:
+    //     }
+      
+    // });
   }
 });
 

@@ -15,7 +15,7 @@ const productDisplay = async () => {
   document.querySelector("section").innerHTML = productData
     .map(
       (product) =>
-        `<a href="./product.html?id=${product._id}">
+        `<a href="front/html/product.html?id=${product._id}">
             <article>
             <img src=${product.imageUrl} >
             <h3 class="productName">${product.name}</h3>

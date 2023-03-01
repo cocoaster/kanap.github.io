@@ -95,20 +95,29 @@ const ProductsValues = (values) => {
   const existingProductIndex = addedProducts.findIndex(
     (p) => p.id === data.id && p.color === data.color
   );
-  if (existingProductIndex === -1) {
-    addedProducts.push({
-      ...data,
-      quantity: Number(data.quantity),
-    });
-  } else {
-    addedProducts.map((item) => {
-      return {
-        ...item,
-        quantity: parseInt(item.quantity),
-      };
-    });
-    addedProducts[existingProductIndex].quantity += Number(data.quantity);
-  }
-  localStorage.setItem("products", JSON.stringify(addedProducts));
-  location.href = "./cart.html";
+  if (quantity.value < 1 || quantity.value > 100) {
+    alert("Veuillez sélectionner une quantité entre 1 et 100"); return;
+  
+  } else if (existingProductIndex === -1 && data.quantity > 0 && data.quantity <= 100) {
+      addedProducts.push({
+        ...data,
+        quantity: Number(data.quantity),
+      });
+    } else {
+      addedProducts.map((item) => {
+        return {
+          ...item,
+          quantity: parseInt(item.quantity),
+        };
+      });
+      addedProducts[existingProductIndex].quantity += Number(data.quantity);
+    } 
+      
+      location.href = "./cart.html";
+    
+    localStorage.setItem("products", JSON.stringify(addedProducts));
 };
+
+
+// Empêcher de commander si la quantité est 0
+
