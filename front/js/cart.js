@@ -209,20 +209,21 @@ setTimeout(() => {
 // ---------------------Formulaire---------------------
 
 const form = document.querySelector("form");
+form.addEventListener("submit", (e) => {
+  formSubmitted(e);
+});
 const inputs = document.querySelectorAll(
   'input[type="text"], input[type="email"]'
 );
-console.log(inputs);
 
-let firstName, lastName, address, city, email;
+let isFormValid = false;
 
 // Fonction d'affichage des messages d'erreur
 const errorDisplay = (tag, message, valid) => {
   setTimeout(() => {
     const errorP = document.getElementById(tag + "ErrorMsg");
-    if (!valid ) {
+    if (!valid) {
       errorP.textContent = message;
-
     } else {
       errorP.textContent = message;
     }
@@ -237,15 +238,18 @@ const firstNameChecker = (value) => {
       "Ce champs doit comporter moins de 48 caractères"
     );
     firstName = null;
+    isFormValid = false;
   } else if (!value.match(/^[a-zA-Z'-]*$/)) {
     errorDisplay(
       "firstName",
       "Ce champs ne doit pas contenir de nombre ni de caractères spéciaux autres que - et '"
     );
     firstName = null;
+    isFormValid = false;
   } else {
     errorDisplay("firstName", "", true);
     firstName = value;
+    isFormValid = true;
   }
 };
 
@@ -253,15 +257,18 @@ const lastNameChecker = (value) => {
   if (value.length > 47) {
     errorDisplay("lastName", "Ce champs doit comporter moins de 48 caractères");
     lastName = null;
+    isFormValid = false;
   } else if (!value.match(/^[a-zA-Z'-]*$/)) {
     errorDisplay(
       "lastName",
       "Ce champs ne doit pas contenir de nombre ni de caractères spéciaux autres que les - et les '"
     );
     lastName = null;
+    isFormValid = false;
   } else {
     errorDisplay("lastName", "", true);
     lastName = value;
+    isFormValid = true;
   }
 };
 
@@ -271,88 +278,65 @@ const addressChecker = (value) => {
       "address",
       "Ce champs doit comporter entre moins de 60 caracteres"
     );
-    address = null;
+    lastName = null;
+    isFormValid = false;
   } else if (!value.match(/^[a-zà-öø-ÿ¨'\d,-\/]+$/i)) {
     errorDisplay(
       "address",
       "Ce champs ne doit pas contenir de caractères spéciaux autres que - / , et '"
     );
-    address = null;
+    lastName = null;
+    isFormValid = false;
   } else {
     errorDisplay("address", "", true);
-    address = value;
+    lastName = value;
+    isFormValid = true;
   }
 };
 
 const cityChecker = (value) => {
   if (value.length > 48) {
     errorDisplay("city", "Ce champs doit comporter entre 2 et 48 caractères");
-    city = null;
+    lastName = null;
+    isFormValid = false;
   } else if (!value.match(/^[a-zà-öø-ÿ¨'-\/]+$/i)) {
     errorDisplay(
       "city",
       "Ce champs ne doit pas contenir de nombre ou de caractères spéciaux autres que - / et '"
     );
-    city = null;
+    lastName = null;
+    isFormValid = false;
   } else {
     errorDisplay("city", "", true);
-    city = value;
+    lastName = value;
+    isFormValid = true;
   }
 };
 
 const emailChecker = (value) => {
   if (!value.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
     errorDisplay("email", "Cet email n'est pas valide");
-    email = null;
+    lastName = null;
+    isFormValid = false;
   } else {
     errorDisplay("email", "", true);
-    email = value;
+    lastName = value;
+    isFormValid = true;
   }
 };
 
-// Ecoute des valeurs entrées dans le formulaire
-const validateForm = (inputs) => {
-inputs.forEach((input) => {
-  input.addEventListener("input", (e) => {
-    switch (e.target.id) {
-      case "firstName":
-        firstNameChecker(e.target.value);
-      case "lastName":
-        lastNameChecker(e.target.value);
-      case "address":
-        addressChecker(e.target.value);
-      case "city":
-        cityChecker(e.target.value);
-      case "email":
-        emailChecker(e.target.value);
-        break;
-      default:
-        nul;
-    }
-  });
-});
-}
-
-// Création de l'array d'_id extrait du local storage pour l'envoi au serveur
-console.log(addedProducts[0].id);
-
-const products = [];
-for (let l = 0; l < addedProducts.length; l++) {
-  products.push(addedProducts[l].id);
-}
-// console.log(productsId);
-// const products = productsId.map((value) => {
-//   return {_id: value};
-// });
-
-console.log(products);
-
-// Soumission du formulaire
-form.addEventListener("submit", (e) => {
+// Fonction de soumission du formulaire
+function formSubmitted(e) {
   e.preventDefault();
-  validateForm(Array.from(inputs));
+  const formInputs = e.target;
+  const inputFirstName = firstNameChecker(formInputs.elements.firstName.value);
+  const inputLastName = lastNameChecker(formInputs.elements.lastName.value);
+  const inputAddress = addressChecker(formInputs.elements.address.value);
+  const inputCity = cityChecker(formInputs.elements.city.value);
+  const inputEmail = emailChecker(formInputs.elements.email.value);
 
-  if (firstName && lastName && address && city && email) {
+  if (isFormValid) {
+    console.log("form valide");
     const contact = {
       firstName: firstName,
       lastName: lastName,
@@ -370,30 +354,20 @@ form.addEventListener("submit", (e) => {
     inputs.forEach((input) => {
       input.value = "";
     });
-  
+
     sendToServer(toSend);
-  } else {
-    validateForm(inputs);
-    // alert("Veuillez compléter tous les champs du formulaire");
-    // inputs.forEach((input) => {
-    //     switch (e.target.id) {
-    //       case "firstName":
-    //         firstNameChecker(e.target.value);
-    //       case "lastName":
-    //         lastNameChecker(e.target.value);
-    //       case "address":
-    //         addressChecker(e.target.value);
-    //       case "city":
-    //         cityChecker(e.target.value);
-    //       case "email":
-    //         emailChecker(e.target.value);
-    //         break;
-    //       default:
-    //     }
-      
-    // });
   }
-});
+}
+
+// Création de l'array d'_id extrait du local storage pour l'envoi au serveur
+console.log(addedProducts[0].id);
+
+const products = [];
+for (let l = 0; l < addedProducts.length; l++) {
+  products.push(addedProducts[l].id);
+}
+
+console.log(products);
 
 // Fonction d'envoie des données du formulaire et des produits commandés au serveur
 function sendToServer(toSend) {
