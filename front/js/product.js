@@ -16,8 +16,8 @@ const colorsLocation = document.getElementById("colors");
 const urlIdSelected = window.location.search;
 console.log(urlIdSelected);
 
-const urlIdSelectedSliced = urlIdSelected.slice(1);
-console.log(urlIdSelectedSliced);
+// const urlIdSelectedSliced = urlIdSelected.slice(1);
+// console.log(urlIdSelectedSliced);
 
 const url = new URLSearchParams(urlIdSelected);
 console.log(url);
@@ -70,7 +70,7 @@ async function productDisplay() {
       console.log(colorOption);
     }
   }
-  colorOption.forEach((colorIndex) => console.log);
+  // colorOption.forEach((colorIndex) => console.log);
 
   colorsLocation.innerHTML = `${colorOption.join("")}`;
 }

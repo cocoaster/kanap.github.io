@@ -203,7 +203,6 @@ setTimeout(() => {
   }
 }, 2000);
 
-// Fonction de vidage du local Storage si le panier est vide 
 
 
 // ---------------------Formulaire---------------------
