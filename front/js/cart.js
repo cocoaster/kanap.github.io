@@ -90,12 +90,13 @@ async function productDisplay() {
     let apiId = datas[i]._id;
     let name = datas[i].name;
     let image = datas[i].imageUrl;
+    let alt = datas[i].altTxt;
     let price = datas[i].price;
 
     basketContent += `
         <article class="cart__item" data-id="${id}" data-color="${color}">
         <div class="cart__item__img">
-          <img src=${image} alt="Photographie d'un canapé">
+          <img src=${image} alt=${alt}>
         </div>
         <div class="cart__item__content">
           <div class="cart__item__content__description">
@@ -115,12 +116,12 @@ async function productDisplay() {
         </div>
       </article>`;
     productsLocation.innerHTML = basketContent;
-    calculPrice ()
+    calculPrice();
   }
 }
 productDisplay();
 
-// Modification des quantités et suppression des produits
+// Modification des quantités
 setTimeout(() => {
   const inputLocation = document.querySelectorAll(".itemQuantity");
   console.log(inputLocation);
@@ -137,17 +138,22 @@ setTimeout(() => {
     inputLocation[i].addEventListener("change", function () {
       let newQuantity = Number(this.value);
       for (let j = 0; j < addedProducts.length; j++) {
-        if (addedProducts[j].id === dataId && addedProducts[j].color === dataColor) {
+        if (
+          addedProducts[j].id === dataId &&
+          addedProducts[j].color === dataColor
+        ) {
           addedProducts[j].quantity = newQuantity;
 
           if (newQuantity < 1 || newQuantity > 100) {
             alert("Veuillez sélectionner une quantité entre 1 et 100.");
             // remettre l'ancienne valeur si la quantité n'est pas comprise entre 1 et 100
-            this.value = datas.find(item => item.id === dataId && item.color === dataColor).quantity;
+            this.value = datas.find(
+              (item) => item.id === dataId && item.color === dataColor
+            ).quantity;
             return; // Quitter eventListener
           }
           localStorage.setItem("products", JSON.stringify(addedProducts));
-  
+
           // Mise à jour de datas
           for (let k = 0; k < datas.length; k++) {
             if (datas[k].id === dataId && datas[k].color === dataColor) {
@@ -156,10 +162,8 @@ setTimeout(() => {
             }
           }
           calculPrice();
-       
-          console.log(totalLocation);
-          
 
+          console.log(totalLocation);
         }
       }
     });
@@ -174,7 +178,7 @@ setTimeout(() => {
 
       // Boucle sur les produits ajoutés pour trouver celui à supprimer
       for (let j = 0; j < datas.length; j++) {
-        if (datas[j].id === dataId && datas[j].color === dataColor ) {
+        if (datas[j].id === dataId && datas[j].color === dataColor) {
           // Supprime l'article correspondant du tableau
           datas.splice(j, 1);
           localStorage.setItem("products", JSON.stringify(addedProducts));
@@ -184,16 +188,13 @@ setTimeout(() => {
 
           break;
         }
-       
       }
 
       // Mettre à jour les données du localStorage
       localStorage.setItem("products", JSON.stringify(datas));
-      if ( datas.length === 0) { 
-
+      if (datas.length === 0) {
         localStorage.removeItem("products");
         emptyCart();
-      
       }
 
       // Supprimer visuellement l'article du panier

@@ -41,13 +41,14 @@ async function productDisplay() {
 
   let name = productData.name;
   let image = productData.imageUrl;
+  let alt = productData.altTxt;
   let price = productData.price;
   let description = productData.description;
 
   titleHeaderLocation.textContent = `${name}`;
 
   imgLocation.innerHTML = `
-  <img src="${image}" />
+  <img src="${image}"  alt=${alt}/>
   `;
   h1Location.innerHTML = `
   <h1>${name}</h1>
@@ -70,7 +71,6 @@ async function productDisplay() {
       console.log(colorOption);
     }
   }
-  // colorOption.forEach((colorIndex) => console.log);
 
   colorsLocation.innerHTML = `${colorOption.join("")}`;
 }
@@ -96,28 +96,31 @@ const ProductsValues = (values) => {
     (p) => p.id === data.id && p.color === data.color
   );
   if (quantity.value < 1 || quantity.value > 100) {
-    alert("Veuillez sélectionner une quantité entre 1 et 100"); return;
-  
-  } else if (existingProductIndex === -1 && data.quantity > 0 && data.quantity <= 100) {
-      addedProducts.push({
-        ...data,
-        quantity: Number(data.quantity),
-      });
-    } else {
-      addedProducts.map((item) => {
-        return {
-          ...item,
-          quantity: parseInt(item.quantity),
-        };
-      });
-      addedProducts[existingProductIndex].quantity += Number(data.quantity);
-    } 
-      
-      location.href = "./cart.html";
-    
-    localStorage.setItem("products", JSON.stringify(addedProducts));
+    alert("Veuillez sélectionner une quantité entre 1 et 100");
+    return;
+  } else if (
+    existingProductIndex === -1 &&
+    data.quantity > 0 &&
+    data.quantity <= 100
+  ) {
+    addedProducts.push({
+      ...data,
+      quantity: Number(data.quantity),
+    });
+  } else {
+    addedProducts.map((item) => {
+      return {
+        ...item,
+        quantity: parseInt(item.quantity),
+      };
+    });
+    addedProducts[existingProductIndex].quantity += Number(data.quantity);
+  }
+
+  location.href = "./cart.html";
+
+  localStorage.setItem("products", JSON.stringify(addedProducts));
 };
 
 
-// Empêcher de commander si la quantité est 0
 
