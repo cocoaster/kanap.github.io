@@ -1,13 +1,13 @@
 const orderNumberLocation = document.getElementById("orderId");
-const id = localStorage.getItem("orderID") || [];
+const urlParams = new URLSearchParams(window.location.search);
+const orderId = urlParams.get("orderId");
 
-// Afficher le n° de commande 
-console.log(`orderId: ${id}`);
-orderNumberLocation.innerHTML = `${id}`;
+// Afficher le n° de commande
+console.log(`orderId: ${orderId}`);
+orderNumberLocation.innerHTML = `${orderId}`;
 
 // Retirer les données duu local storage
 function removeLocalStorage(key) {
   localStorage.removeItem(key);
 }
-removeLocalStorage("orderID");
 removeLocalStorage("products");

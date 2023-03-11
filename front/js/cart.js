@@ -383,8 +383,8 @@ function sendToServer(toSend) {
       const content = await response.json();
       console.log(content);
       if (response.ok) {
-        localStorage.setItem("orderID", content.orderId);
-        location.href = "./confirmation.html";
+        const orderID = content.orderId;
+        location.href = `./confirmation.html?orderId=${orderID}`;
       } else {
         alert(`Problème de serveur erreur : ${response.status}`);
       }
