@@ -8,7 +8,6 @@ console.log(totalLocation);
 const cartOrderElem = document.querySelector('.cart__order');
 
 
-
 // Récupérer le contenu du localStorage
 const getLocalStorage = localStorage.getItem("products");
 
@@ -28,8 +27,6 @@ function emptyCart() {
   emptyCart();
  
 }
-
-
 
   //Récupération des produits présents dans le localStorage
 
@@ -81,7 +78,7 @@ function calculPrice () {
 // Fonction d'affichage des produits
 async function productDisplay() {
   await fetchProduct();
-  let basketContent = [];
+  let basketContent = document.createDocumentFragment();
 
   for (let i = 0; i < datas.length; i++) {
     let color = datas[i].color;
@@ -93,32 +90,68 @@ async function productDisplay() {
     let alt = datas[i].altTxt;
     let price = datas[i].price;
 
-    basketContent += `
-        <article class="cart__item" data-id="${id}" data-color="${color}">
-        <div class="cart__item__img">
-          <img src=${image} alt=${alt}>
-        </div>
-        <div class="cart__item__content">
-          <div class="cart__item__content__description">
-            <h2>${name}</h2>
-            <p>${color}</p>
-            <p>${price}€</p>
-          </div>
-          <div class="cart__item__content__settings">
-            <div class="cart__item__content__settings__quantity">
-              <p>Qté :  </p>
-              <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${quantity}>
-            </div>
-            <div class="cart__item__content__settings__delete">
-              <p class="deleteItem">Supprimer</p>
-            </div>
-          </div>
-        </div>
-      </article>`;
-    productsLocation.innerHTML = basketContent;
+    let article = document.createElement("article");
+    article.className = "cart__item";
+    article.setAttribute("data-id", id);
+    article.setAttribute("data-color", color);
+
+    let imgDiv = document.createElement("div");
+    imgDiv.className = "cart__item__img";
+    let img = document.createElement("img");
+    img.src = image;
+    img.alt = alt;
+    imgDiv.appendChild(img);
+    article.appendChild(imgDiv);
+
+    let contentDiv = document.createElement("div");
+    contentDiv.className = "cart__item__content";
+    let descDiv = document.createElement("div");
+    descDiv.className = "cart__item__content__description";
+    let nameH2 = document.createElement("h2");
+    nameH2.textContent = name;
+    let colorP = document.createElement("p");
+    colorP.textContent = color;
+    let priceP = document.createElement("p");
+    priceP.textContent = `${price}€`;
+    descDiv.appendChild(nameH2);
+    descDiv.appendChild(colorP);
+    descDiv.appendChild(priceP);
+    contentDiv.appendChild(descDiv);
+
+    let settingsDiv = document.createElement("div");
+    settingsDiv.className = "cart__item__content__settings";
+    let quantityDiv = document.createElement("div");
+    quantityDiv.className = "cart__item__content__settings__quantity";
+    let quantityP = document.createElement("p");
+    quantityP.textContent = "Qté :  ";
+    let quantityInput = document.createElement("input");
+    quantityInput.type = "number";
+    quantityInput.className = "itemQuantity";
+    quantityInput.name = "itemQuantity";
+    quantityInput.min = "1";
+    quantityInput.max = "100";
+    quantityInput.value = quantity;
+    quantityDiv.appendChild(quantityP);
+    quantityDiv.appendChild(quantityInput);
+    settingsDiv.appendChild(quantityDiv);
+
+    let deleteDiv = document.createElement("div");
+    deleteDiv.className = "cart__item__content__settings__delete";
+    let deleteP = document.createElement("p");
+    deleteP.className = "deleteItem";
+    deleteP.textContent = "Supprimer";
+    deleteDiv.appendChild(deleteP);
+    settingsDiv.appendChild(deleteDiv);
+
+    contentDiv.appendChild(settingsDiv);
+    article.appendChild(contentDiv);
+
+    basketContent.appendChild(article);
     calculPrice();
   }
+  productsLocation.appendChild(basketContent);
 }
+
 productDisplay();
 
 // Modification des quantités

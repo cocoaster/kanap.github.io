@@ -35,6 +35,7 @@ const fetchProduct = async () => {
 fetchProduct();
 
 // Afficher le produit est ses caractéritiques
+
 async function productDisplay() {
   await fetchProduct();
   console.log(productData.name);
@@ -47,18 +48,26 @@ async function productDisplay() {
 
   titleHeaderLocation.textContent = `${name}`;
 
-  imgLocation.innerHTML = `
-  <img src="${image}"  alt=${alt}/>
-  `;
-  h1Location.innerHTML = `
-  <h1>${name}</h1>
-  `;
-  priceLocation.innerHTML = `
-<span id="price">${price}</span>
-  `;
-  descriptionLocation.innerHTML = `
-  <p id="description">${description}</p>
-  `;
+  let img = document.createElement("img");
+  img.src = image;
+  img.alt = alt;
+  imgLocation.appendChild(img);
+
+  let h1 = document.createElement("h1");
+  h1.textContent = name;
+  h1Location.appendChild(h1);
+
+  let priceSpan = document.createElement("span");
+  priceSpan.id = "price";
+  priceSpan.textContent = price;
+  priceLocation.appendChild(priceSpan);
+
+  let descriptionP = document.createElement("p");
+  descriptionP.id = "description";
+  descriptionP.textContent = description;
+  descriptionLocation.appendChild(descriptionP);
+
+  colorsLocation.innerHTML = ""; // Vider la liste de couleurs avant de la remplir
 
   let colorOption = [];
 
@@ -67,15 +76,19 @@ async function productDisplay() {
       let color = productData.colors[`${i}`];
       console.log(color);
 
-      colorOption.push(`<option value=${color}>${color}</option>`);
-      console.log(colorOption);
+      let option = document.createElement("option");
+      option.value = color;
+      option.textContent = color;
+      colorOption.push(option);
     }
   }
 
-  colorsLocation.innerHTML = `${colorOption.join("")}`;
+  // Ajouter chaque option de colorOption à colorsLocation
+  colorOption.forEach((option) => colorsLocation.appendChild(option));
 }
 
 productDisplay();
+
 
 //envoyer la sélection dans le local strorage et renvoyer vers le panier après validation
 document
