@@ -1,4 +1,6 @@
 const orderNumberLocation = document.getElementById("orderId");
+
+// Récupérer l'id de commande dans l'URL
 const urlParams = new URLSearchParams(window.location.search);
 const orderId = urlParams.get("orderId");
 
