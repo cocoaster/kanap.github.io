@@ -296,7 +296,7 @@ const lastNameChecker = (value) => {
 };
 
 const addressChecker = (value) => {
-  if (value.length > 60 || !value.match(/^[a-zA-Z0-9\s,'-]*$/)) {
+  if (value.length > 60 || !value.match(/^[a-zA-Z0-9\s,'-éèàêûôîäëüöç]*$/)) {
     
    
 errorDisplay("address", "L'adresse doit comporter moins de 60 caractères et ne peut pas contenir de caractères spéciaux", false);
