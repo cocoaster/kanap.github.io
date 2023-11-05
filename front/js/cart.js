@@ -409,7 +409,7 @@ console.log(products);
 
 // Fonction d'envoie des données du formulaire et des produits commandés au serveur
 function sendToServer(toSend) {
-  const productIdGo = fetch("https://localhost:10000/api/products/order", {
+  const productIdGo = fetch("https:/kanap-kue4.onrender.com/api/products/order", {
     method: "POST",
     body: JSON.stringify(toSend),
     headers: {"Content-Type": "application/json"},

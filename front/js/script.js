@@ -2,7 +2,7 @@ let productData = [];
 
 // Récupération des produits stockésdans l'API
 const fetchProduct = async () => {
-  await fetch("https://localhost:10000/api/products") // Assurez-vous que l'URL est correcte et utilise HTTPS
+  await fetch("https://kanap-kue4.onrender.com/api/products") // Assurez-vous que l'URL est correcte et utilise HTTPS
     .then((res) => res.json())
     .then((data) => (productData = data))
     .catch((error) => console.error("An error occurred:", error)); // Ajouter un gestionnaire d'erreur pour voir les erreurs
