@@ -6,7 +6,7 @@ const productRoutes = require('./routes/product');
 const app = express();
 app.get('/', (req, res) => {
 
-  res.sendFile(path.join(__dirname, 'front', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'front', 'index.html'));
 });
 
 app.use((req, res, next) => {
@@ -16,7 +16,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(path.join(__dirname, 'front')));
+app.use(express.static(path.join(__dirname, '..', 'front')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(express.static('images'));
 
