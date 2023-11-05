@@ -5,11 +5,11 @@ const path = require('path');
 const productRoutes = require('./routes/product');
 
 const app = express();
-app.use(cors({
-  origin: 'https://kanap-y7q1.onrender.com', // Remplacez avec l'origine de votre front-end
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content', 'Accept', 'Content-Type', 'Authorization'],
-}));
+app.use((req, res, next) => {
+  console.log('CORS request:', req.method, req.path);
+  next();
+}, cors());
+
 
 
 // app.use((req, res, next) => {
