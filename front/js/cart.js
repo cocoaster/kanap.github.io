@@ -392,27 +392,23 @@ console.log(products);
 
 // Fonction d'envoie des données du formulaire et des produits commandés au serveur
 function sendToServer(toSend) {
-  const productIdGo = fetch("https:/kanap-kue4.onrender.com/api/products/order", {
+  fetch("https://kanap-kue4.onrender.com/api/products/order", {
     method: "POST",
     body: JSON.stringify(toSend),
-    headers: {"Content-Type": "application/json"},
-  });
-  console.log(productIdGo);
-  productIdGo.then(async (response) => {
-    try {
-      console.log(response);
-      const content = await response.json();
-      console.log(content);
-      if (response.ok) {
-        const orderID = content.orderId;
-        location.href = `./confirmation.html?orderId=${orderID}`;
-      } else {
-        alert(`Problème de serveur erreur : ${response.status}`);
-      }
-    } catch (e) {
-      console.log("error from catch");
-      console.log(e);
-      alert(`Error() ${e}`);
+    headers: { "Content-Type": "application/json" },
+  })
+  .then(async (response) => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+    return response.json();
+  })
+  .then((content) => {
+    const orderID = content.orderId;
+    location.href = `./confirmation.html?orderId=${orderID}`;
+  })
+  .catch((e) => {
+    console.error("Error from catch", e);
+    alert(`Error: ${e}`);
   });
 }
