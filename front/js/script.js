@@ -2,9 +2,10 @@ let productData = [];
 
 // Récupération des produits stockésdans l'API
 const fetchProduct = async () => {
-  await fetch("http://localhost:10000/api/products")
+  await fetch("https://kanap-dmeg.onrender.com/api/products") // Assurez-vous que l'URL est correcte et utilise HTTPS
     .then((res) => res.json())
-    .then((data) => (productData = data));
+    .then((data) => (productData = data))
+    .catch((error) => console.error("An error occurred:", error)); // Ajouter un gestionnaire d'erreur pour voir les erreurs
 };
 
 // Affichage des produits sur la page
