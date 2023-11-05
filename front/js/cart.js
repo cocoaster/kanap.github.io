@@ -318,18 +318,18 @@ const addressChecker = (value) => {
       "address",
       "Ce champs doit comporter entre moins de 60 caracteres"
     );
-    lastName = null;
+    address = null;
     isFormValid = false;
   } else if (!value.match(/^[a-zà-öø-ÿ¨'\d,-\/]+$/i)) {
     errorDisplay(
       "address",
       "Ce champs ne doit pas contenir de caractères spéciaux autres que - / , et '"
     );
-    lastName = null;
+    address = null;
     isFormValid = false;
   } else {
     errorDisplay("address", "", true);
-    lastName = value;
+    address = value;
     isFormValid = true;
   }
 };
@@ -337,18 +337,18 @@ const addressChecker = (value) => {
 const cityChecker = (value) => {
   if (value.length > 48) {
     errorDisplay("city", "Ce champs doit comporter entre 2 et 48 caractères");
-    lastName = null;
+    city = null;
     isFormValid = false;
   } else if (!value.match(/^[a-zà-öø-ÿ¨'-\/]+$/i)) {
     errorDisplay(
       "city",
       "Ce champs ne doit pas contenir de nombre ou de caractères spéciaux autres que - / et '"
     );
-    lastName = null;
+    city = null;
     isFormValid = false;
   } else {
     errorDisplay("city", "", true);
-    lastName = value;
+    city = value;
     isFormValid = true;
   }
 };
@@ -356,11 +356,11 @@ const cityChecker = (value) => {
 const emailChecker = (value) => {
   if (!value.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
     errorDisplay("email", "Cet email n'est pas valide");
-    lastName = null;
+    email = null;
     isFormValid = false;
   } else {
     errorDisplay("email", "", true);
-    lastName = value;
+    email = value;
     isFormValid = true;
   }
 };
