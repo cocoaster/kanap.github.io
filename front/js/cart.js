@@ -273,24 +273,14 @@ const errorDisplay = (tag, message, valid) => {
 // Mise en place des conditions de validation des champs du formulaire
 const firstNameChecker = (value) => {
   if (value.length > 48) {
-    errorDisplay(
-      "firstName",
-      "Ce champs doit comporter moins de 48 caractères"
-    );
-    firstName = null;
-    isFormValid = false;
+    errorDisplay("firstName", "Ce champs doit comporter moins de 48 caractères");
+    throw new Error("firstName invalide");
   } else if (!value.match(/^[a-zA-Z'-]*$/)) {
-    errorDisplay(
-      "firstName",
-      "Ce champs ne doit pas contenir de nombre ni de caractères spéciaux autres que - et '"
-    );
-    firstName = null;
-    isFormValid = false;
-  } else {
-    errorDisplay("firstName", "", true);
-    firstName = value;
-    isFormValid = true;
+    errorDisplay("firstName", "Ce champs ne doit pas contenir de nombre ni de caractères spéciaux autres que - et '");
+    throw new Error("firstName invalide");
   }
+  errorDisplay("firstName", "", true);
+  return value;
 };
 
 const lastNameChecker = (value) => {
@@ -368,33 +358,25 @@ const emailChecker = (value) => {
 // Fonction de soumission du formulaire
 function formSubmitted(e) {
   e.preventDefault();
-  const formInputs = e.target;
-  const inputFirstName = firstNameChecker(formInputs.elements.firstName.value);
-  const inputLastName = lastNameChecker(formInputs.elements.lastName.value);
-  const inputAddress = addressChecker(formInputs.elements.address.value);
-  const inputCity = cityChecker(formInputs.elements.city.value);
-  const inputEmail = emailChecker(formInputs.elements.email.value);
-
-  if (isFormValid) {
-    console.log("form valide");
+  try {
     const contact = {
-      firstName: inputFirstName,
-      lastName: inputLastName,
-      address: inputAddress,
-      city: inputCity,
-      email: inputEmail,
+      firstName: firstNameChecker(e.target.elements.firstName.value),
+      lastName: lastNameChecker(e.target.elements.lastName.value),
+      address: addressChecker(e.target.elements.address.value),
+      city: cityChecker(e.target.elements.city.value),
+      email: emailChecker(e.target.elements.email.value),
     };
-    console.log(contact);
+    console.log("form valide", contact);
     const toSend = {
       contact,
       products,
     };
     console.log(toSend);
-    inputs.forEach((input) => {
-      input.value = "";
-    });
-
+    inputs.forEach((input) => input.value = "");
     sendToServer(toSend);
+  } catch (error) {
+    console.log("form invalide", error);
+    // Afficher un message d'erreur à l'utilisateur ici, si nécessaire
   }
 }
 
