@@ -4,10 +4,7 @@ const path = require('path');
 const productRoutes = require('./routes/product');
 
 const app = express();
-app.get('/', (req, res) => {
 
-  res.sendFile(path.join(__dirname, '..', 'index.html'));
-});
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -19,6 +16,11 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, '..')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(express.static('images'));
+
+app.get('/', (req, res) => {
+
+  res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
