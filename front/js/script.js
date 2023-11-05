@@ -22,7 +22,7 @@ const productDisplay = async () => {
     const article = document.createElement("article");
 
     const img = document.createElement("img");
-    img.src = product.imageUrl;
+    img.src = product.imageUrl.replace("http://", "https://");
     img.alt = product.altTxt;
     article.appendChild(img);
 

@@ -103,7 +103,7 @@ async function productDisplay() {
     let imgDiv = document.createElement("div");
     imgDiv.className = "cart__item__img";
     let img = document.createElement("img");
-    img.src = image;
+    img.src = image.replace("http://", "https://");
     img.alt = alt;
     imgDiv.appendChild(img);
     article.appendChild(imgDiv);

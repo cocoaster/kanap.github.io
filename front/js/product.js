@@ -49,7 +49,8 @@ async function productDisplay() {
   titleHeaderLocation.textContent = `${name}`;
 
   let img = document.createElement("img");
-  img.src = image;
+  img.src = image.replace("http://", "https://");
+
   img.alt = alt;
   imgLocation.appendChild(img);
 
