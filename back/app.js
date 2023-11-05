@@ -4,6 +4,11 @@ const path = require('path');
 const productRoutes = require('./routes/product');
 
 const app = express();
+app.get('/', (req, res) => {
+  res.
+  res
+sendFile(path.join(__dirname, 'front', 'index.html'));
+});
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
