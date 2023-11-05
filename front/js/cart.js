@@ -44,7 +44,9 @@ const addedProducts = JSON.parse(localStorage.getItem("products") || []);
 async function fetchProduct() {
   await fetch(`https://kanap-kue4.onrender.com/api/products`)
     .then((res) => res.json())
-    .then((data) => (productData = data));
+    .then((data) => (productData = data))
+    .catch((error) => console.error("An error occurred:", error));
+
   console.log(productData);
 }
 fetchProduct();

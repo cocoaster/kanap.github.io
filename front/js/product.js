@@ -28,7 +28,9 @@ console.log(id);
 const fetchProduct = async () => {
   await fetch(`https://kanap-kue4.onrender.com/api/products/${id}`)
     .then((res) => res.json())
-    .then((data) => (productData = data));
+    .then((data) => (productData = data))
+    .catch((error) => console.error("An error occurred:", error));
+
 
   console.log(productData);
 };
@@ -58,15 +60,9 @@ async function productDisplay() {
   h1.textContent = name;
   h1Location.appendChild(h1);
 
-  let priceSpan = document.createElement("span");
-  priceSpan.id = "price";
-  priceSpan.textContent = price;
-  priceLocation.appendChild(priceSpan);
-
-  let descriptionP = document.createElement("p");
-  descriptionP.id = "description";
-  descriptionP.textContent = description;
-  descriptionLocation.appendChild(descriptionP);
+  priceLocation.textContent = price;
+  descriptionLocation.textContent = description;
+  
 
   colorsLocation.innerHTML = ""; // Vider la liste de couleurs avant de la remplir
 
@@ -131,9 +127,9 @@ const ProductsValues = (values) => {
     addedProducts[existingProductIndex].quantity += Number(data.quantity);
   }
 
-  location.href = "./cart.html";
-
   localStorage.setItem("products", JSON.stringify(addedProducts));
+  location.href = "./cart.html";
+  
 };
 
 
