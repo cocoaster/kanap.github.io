@@ -92,41 +92,32 @@ document
   .getElementById("addToCart")
   .addEventListener("click", () => ProductsValues());
 
-const ProductsValues = (values) => {
-  const data = {
-    color: colors.value,
-    quantity: quantity.value,
-    id: `${id}`,
-  };
+  const ProductsValues = () => {
+    const colors = document.getElementById('colors'); // Assurez-vous que l'ID est correct
+    const quantity = document.getElementById('quantity'); // Assurez-vous que l'ID est correct
+  
+    const data = {
+      color: colors.value,
+      quantity: parseInt(quantity.value), // Convertir la quantité en nombre ici pour éviter de le faire à plusieurs endroits
+      id: id,
+    };
 
   //Ajout des produits dans le local storage
-  const addedProducts = JSON.parse(localStorage.getItem("products")) || [];
+  let addedProducts = JSON.parse(localStorage.getItem("products")) || [];
 
   const existingProductIndex = addedProducts.findIndex(
     (p) => p.id === data.id && p.color === data.color
   );
-  if (quantity.value < 1 || quantity.value > 100) {
+
+  if (data.quantity < 1 || data.quantity > 100) {
     alert("Veuillez sélectionner une quantité entre 1 et 100");
     return;
-  } else if (
-    existingProductIndex === -1 &&
-    data.quantity > 0 &&
-    data.quantity <= 100
-  ) {
-    addedProducts.push({
-      ...data,
-      quantity: Number(data.quantity),
-    });
+  } else if (existingProductIndex === -1) {
+    addedProducts.push(data);
   } else {
-    addedProducts.map((item) => {
-      return {
-        ...item,
-        quantity: parseInt(item.quantity),
-      };
-    });
-    addedProducts[existingProductIndex].quantity += Number(data.quantity);
+    // Pas besoin de map ici, car nous mettons à jour un seul produit
+    addedProducts[existingProductIndex].quantity += data.quantity;
   }
-
   localStorage.setItem("products", JSON.stringify(addedProducts));
   location.href = "./cart.html";
   
