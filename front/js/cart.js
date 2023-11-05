@@ -10,39 +10,44 @@ const cartOrderElem = document.querySelector('.cart__order');
 
 // Récupérer le contenu du localStorage
 const getLocalStorage = localStorage.getItem("products");
+console.log(getLocalStorage);
 
+let cartItems = [];
+
+if (getLocalStorage !== null) {
+  cartItems = JSON.parse(getLocalStorage);
+}
+
+console.log(cartItems);
 
 function emptyCart() {
   {
-    productsLocation.innerHTML = "<p id = 'emptyCartMsg'>Votre panier est vide</p>";
+    productsLocation.innerHTML =
+      "<p id = 'emptyCartMsg'>Votre panier est vide</p>";
     const emptyCartMsgContent = document.getElementById("emptyCartMsg");
 
     emptyCartMsgContent.style.textAlign = "center";
-    cartOrderElem.style.display = 'none';
+    cartOrderElem.style.display = "none";
   }
 }
 
- // Affichage du panier s'il est vide
- if (getLocalStorage == null) {
+// Affichage du panier s'il est vide
+if (getLocalStorage == null) {
   emptyCart();
- 
 }
 
-  //Récupération des produits présents dans le localStorage
+//Récupération des produits présents dans le localStorage
 
-  const addedProducts = JSON.parse(localStorage.getItem("products") || []);
+const addedProducts = JSON.parse(localStorage.getItem("products") || []);
 
-
-
-  // fonction de requête des données de l'API
-  async function fetchProduct() {
-    await fetch(`http://localhost:3000/api/products`)
-      .then((res) => res.json())
-      .then((data) => (productData = data));
-    console.log(productData);
-  }
-  fetchProduct();
-
+// fonction de requête des données de l'API
+async function fetchProduct() {
+  await fetch(`http://localhost:3000/api/products`)
+    .then((res) => res.json())
+    .then((data) => (productData = data));
+  console.log(productData);
+}
+fetchProduct();
 
 // Fusion des données de l'API et du local storage
 let datas = [];
@@ -58,8 +63,8 @@ async function mergeApiAndLocalData() {
       }
     }
   }
+
   return datas;
-  console.log(datas);
 }
 mergeApiAndLocalData();
 
