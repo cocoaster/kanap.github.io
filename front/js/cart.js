@@ -42,7 +42,7 @@ const addedProducts = JSON.parse(localStorage.getItem("products") || []);
 
 // fonction de requête des données de l'API
 async function fetchProduct() {
-  await fetch(`http://localhost:10000/api/products`)
+  await fetch(`https://kanap-kue4.onrender.com/api/products`)
     .then((res) => res.json())
     .then((data) => (productData = data));
   console.log(productData);
