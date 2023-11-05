@@ -256,137 +256,119 @@ const inputs = document.querySelectorAll(
   'input[type="text"], input[type="email"]'
 );
 
-let isFormValid = false;
+// let isFormValid = false;
 
 // Fonction d'affichage des messages d'erreur
 const errorDisplay = (tag, message, valid) => {
-  setTimeout(() => {
-    const errorP = document.getElementById(tag + "ErrorMsg");
-    if (!valid) {
-      errorP.textContent = message;
-    } else {
-      errorP.textContent = message;
-    }
-  }, 500);
+  // setTimeout(() => {
+  //   const errorP = document.getElementById(tag + "ErrorMsg");
+  //   if (!valid) {
+  //     errorP.textContent = message;
+  //   } else {
+  //     errorP.textContent = message;
+  //   }
+  // }, 500);
+  const errorP = document.getElementById(tag + "ErrorMsg");
+  if (!valid) {
+    errorP.textContent = message;
+  } else {
+    errorP.textContent = ""; // Assurez-vous que le message est effacé quand il n'y a pas d'erreur
+  }
 };
 
 // Mise en place des conditions de validation des champs du formulaire
 const firstNameChecker = (value) => {
-  if (value.length > 48) {
-    errorDisplay("firstName", "Ce champs doit comporter moins de 48 caractères");
-    throw new Error("firstName invalide");
-  } else if (!value.match(/^[a-zA-Z'-]*$/)) {
-    errorDisplay("firstName", "Ce champs ne doit pas contenir de nombre ni de caractères spéciaux autres que - et '");
-    throw new Error("firstName invalide");
+  if (value.length > 48 || !value.match(/^[a-zA-Z'-]*$/)) {
+    errorDisplay("firstName", "Le prénom doit comporter moins de 48 caractères");
+    return false;
   }
   errorDisplay("firstName", "", true);
   return value;
 };
 
 const lastNameChecker = (value) => {
-  if (value.length > 47) {
-    errorDisplay("lastName", "Ce champs doit comporter moins de 48 caractères");
-    lastName = null;
-    isFormValid = false;
-  } else if (!value.match(/^[a-zA-Z'-]*$/)) {
-    errorDisplay(
-      "lastName",
-      "Ce champs ne doit pas contenir de nombre ni de caractères spéciaux autres que les - et les '"
-    );
-    lastName = null;
-    isFormValid = false;
-  } else {
-    errorDisplay("lastName", "", true);
-    lastName = value;
-    isFormValid = true;
+  if (value.length > 47 || !value.match(/^[a-zA-Z'-]*$/)) {
+    errorDisplay("lastName", "Le nom doit comporter moins de 48 caractères");
+    return false;
   }
+  errorDisplay("lastName", "", true);
+  return value;
 };
 
 const addressChecker = (value) => {
-  if (value.length > 60) {
-    errorDisplay(
-      "address",
-      "Ce champs doit comporter entre moins de 60 caracteres"
-    );
-    address = null;
-    isFormValid = false;
-  } else if (!value.match(/^[a-zà-öø-ÿ¨'\d,-\/]+$/i)) {
-    errorDisplay(
-      "address",
-      "Ce champs ne doit pas contenir de caractères spéciaux autres que - / , et '"
-    );
-    address = null;
-    isFormValid = false;
-  } else {
-    errorDisplay("address", "", true);
-    address = value;
-    isFormValid = true;
+  if (value.length > 60 || !value.match(/^[a-zA-Z0-9\s,'-]*$/)) {
+    
+   
+errorDisplay("address", "L'adresse doit comporter moins de 60 caractères et ne peut pas contenir de caractères spéciaux", false);
+    return false;
   }
+  errorDisplay("address", "", true);
+  return true;
 };
 
 const cityChecker = (value) => {
-  if (value.length > 48) {
-    errorDisplay("city", "Ce champs doit comporter entre 2 et 48 caractères");
-    city = null;
-    isFormValid = false;
-  } else if (!value.match(/^[a-zà-öø-ÿ¨'-\/]+$/i)) {
-    errorDisplay(
-      "city",
-      "Ce champs ne doit pas contenir de nombre ou de caractères spéciaux autres que - / et '"
-    );
-    city = null;
-    isFormValid = false;
-  } else {
-    errorDisplay("city", "", true);
-    city = value;
-    isFormValid = true;
+  if (value.length < 2 || value.length > 48 || !value.match(/^[a-zA-Z\s'-]*$/)) {
+    errorDisplay("city", "La ville doit comporter entre 2 et 48 caractères", false);
+    return false;
   }
+  errorDisplay("city", "", true);
+  return true;
 };
 
 const emailChecker = (value) => {
   if (!value.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
-    errorDisplay("email", "Cet email n'est pas valide");
-    email = null;
-    isFormValid = false;
-  } else {
-    errorDisplay("email", "", true);
-    email = value;
-    isFormValid = true;
+    errorDisplay("email", "L'email n'est pas valide", false);
+    return false;
   }
+  errorDisplay("email", "", true);
+  return true;
 };
 
 // Fonction de soumission du formulaire
 function formSubmitted(e) {
   e.preventDefault();
-  try {
+ let isFormValid = true;
+
+  // On récupère les valeurs des champs pour éviter de les sélectionner plusieurs fois
+  const firstNameValue = e.target.elements.firstName.value;
+  const lastNameValue = e.target.elements.lastName.value;
+  const addressValue = e.target.elements.address.value;
+  const cityValue = e.target.elements.city.value;
+  const emailValue = e.target.elements.email.value;
+
+  // Vérifie chaque champ et met à jour `isFormValid`
+  isFormValid &&= firstNameChecker(firstNameValue);
+  isFormValid &&= lastNameChecker(lastNameValue);
+  isFormValid &&= addressChecker(addressValue);
+  isFormValid &&= 
+  isFormValid &&= cityChecker
+  cityChecker(cityValue);
+  isFormValid &&= emailChecker(emailValue);
+
+  if (isFormValid) {
     const contact = {
-      firstName: firstNameChecker(e.target.elements.firstName.value),
-      lastName: lastNameChecker(e.target.elements.lastName.value),
-      address: addressChecker(e.target.elements.address.value),
-      city: cityChecker(e.target.elements.city.value),
-      email: emailChecker(e.target.elements.email.value),
+      firstName: firstNameValue,
+      lastName: lastNameValue,
+      address: addressValue,
+      city: cityValue,
+      email: emailValue,
     };
-    console.log("form valide", contact);
-    const toSend = {
-      contact,
-      products,
-    };
-    console.log(toSend);
-    inputs.forEach((input) => input.value = "");
+    
+   
+const toSend = { contact, products: addedProducts.map(product => product.id) };
+
+    console.log("Form is valid", contact);
     sendToServer(toSend);
-  } catch (error) {
-    console.log("form invalide", error);
+  } else {
+    console.error("Form is invalid");
     // Afficher un message d'erreur à l'utilisateur ici, si nécessaire
   }
 }
 
 // Création de l'array d'_id extrait du local storage pour l'envoi au serveur
 console.log(addedProducts[0].id);
-
-const products = [];
-for (let l = 0; l < addedProducts.length; l++) {
-  products.push(addedProducts[l].id);
-}
+const products = addedProducts.map(product => product.id);
+console.log(products);
 
 console.log(products);
 
@@ -403,9 +385,11 @@ function sendToServer(toSend) {
     }
     return response.json();
   })
-  .then((content) => {
-    const orderID = content.orderId;
-    location.href = `./confirmation.html?orderId=${orderID}`;
+  .then((data) => {
+    const orderID = data.orderId;
+    
+   
+window.location.href = `./confirmation.html?orderId=${orderID}`;
   })
   .catch((e) => {
     console.error("Error from catch", e);
