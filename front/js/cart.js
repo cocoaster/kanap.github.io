@@ -37,17 +37,21 @@ if (getLocalStorage == null) {
 }
 
 //Récupération des produits présents dans le localStorage
-
+let productData = [];
 const addedProducts = JSON.parse(localStorage.getItem("products") || []);
 
 // fonction de requête des données de l'API
 async function fetchProduct() {
-  await fetch(`https://kanap-kue4.onrender.com/api/products`)
-    .then((res) => res.json())
-    .then((data) => (productData = data))
-    .catch((error) => console.error("An error occurred:", error));
-
-  console.log(productData);
+  try {
+    const res = await fetch(`https://kanap-kue4.onrender.com/api/products`);
+    productData = await res.json();
+    console.log(productData);
+    await mergeApiAndLocalData(); // Appeler la fusion des données après le chargement des produits
+    productDisplay(); // Appeler l'affichage des produits après la fusion des données
+  } catch (error) {
+    console.error("An error occurred:", error);
+    // Gérer l'erreur comme afficher un message à l'utilisateur
+  }
 }
 fetchProduct();
 
@@ -84,7 +88,7 @@ function calculPrice () {
 
 // Fonction d'affichage des produits
 async function productDisplay() {
-  await fetchProduct();
+
   let basketContent = document.createDocumentFragment();
 
   for (let i = 0; i < datas.length; i++) {
@@ -157,9 +161,16 @@ async function productDisplay() {
     calculPrice();
   }
   productsLocation.appendChild(basketContent);
+  attachEventListeners();
 }
 
 productDisplay();
+
+function attachEventListeners() {
+  // ... (attachement des écouteurs pour les changements de quantité et la suppression)
+}
+
+fetchProduct();
 
 // Modification des quantités
 setTimeout(() => {
@@ -378,13 +389,12 @@ function formSubmitted(e) {
   if (isFormValid) {
     console.log("form valide");
     const contact = {
-      firstName: firstName,
-      lastName: lastName,
-      address: lastName,
-      city: lastName,
-      email: lastName,
+      firstName: inputFirstName,
+      lastName: inputLastName,
+      address: inputAddress,
+      city: inputCity,
+      email: inputEmail,
     };
-
     console.log(contact);
     const toSend = {
       contact,
