@@ -26,7 +26,7 @@ console.log(id);
 
 // Appeler le produit sélectionné dans l'API
 const fetchProduct = async () => {
-  await fetch(`http://localhost:3000/api/products/${id}`)
+  await fetch(`http://localhost:10000/api/products/${id}`)
     .then((res) => res.json())
     .then((data) => (productData = data));
 

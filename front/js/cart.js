@@ -42,7 +42,7 @@ const addedProducts = JSON.parse(localStorage.getItem("products") || []);
 
 // fonction de requête des données de l'API
 async function fetchProduct() {
-  await fetch(`http://localhost:3000/api/products`)
+  await fetch(`http://localhost:10000/api/products`)
     .then((res) => res.json())
     .then((data) => (productData = data));
   console.log(productData);
@@ -409,7 +409,7 @@ console.log(products);
 
 // Fonction d'envoie des données du formulaire et des produits commandés au serveur
 function sendToServer(toSend) {
-  const productIdGo = fetch("http://localhost:3000/api/products/order", {
+  const productIdGo = fetch("http://localhost:10000/api/products/order", {
     method: "POST",
     body: JSON.stringify(toSend),
     headers: {"Content-Type": "application/json"},
