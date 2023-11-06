@@ -4,7 +4,7 @@ const products = [
     "_id": "107fb5b75607497b96722bda5b504926",
     "name": "Kanap Sinopé",
     "price": 1849,
-    "imageUrl": "kanap01.wbmp",
+    "imageUrl": "kanap01.webp",
     "description": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     "altTxt": "Photo d'un canapé bleu, deux places"
   },
@@ -13,7 +13,7 @@ const products = [
     "_id": "415b7cacb65d43b2b5c1ff70f3393ad1",
     "name": "Kanap Cyllène",
     "price": 4499,
-    "imageUrl": "kanap02.wbmp",
+    "imageUrl": "kanap02.webp",
     "description": "Morbi nec erat aliquam, sagittis urna non, laoreet justo. Etiam sit amet interdum diam, at accumsan lectus.",
     "altTxt": "Photo d'un canapé jaune et noir, quattre places"
   },
@@ -40,7 +40,7 @@ const products = [
     "_id": "8906dfda133f4c20a9d0e34f18adcf06",
     "name": "Kanap Eurydomé",
     "price": 2249,
-    "imageUrl": "kanap05.wbmp",
+    "imageUrl": "kanap05.webp",
     "description": "Ut laoreet vulputate neque in commodo. Suspendisse maximus quis erat in sagittis. Donec hendrerit purus at congue aliquam.",
     "altTxt": "Photo d'un canapé gris, trois places"
   },
@@ -49,7 +49,7 @@ const products = [
     "_id": "77711f0e466b4ddf953f677d30b0efc9",
     "name": "Kanap Hélicé",
     "price": 999,
-    "imageUrl": "kanap06.wbmp",
+    "imageUrl": "kanap06.webp",
     "description": "Curabitur vel augue sit amet arcu aliquet interdum. Integer vel quam mi. Morbi nec vehicula mi, sit amet vestibulum.",
     "altTxt": "Photo d'un canapé gris, deux places"
   },
@@ -58,7 +58,7 @@ const products = [
     "_id": "034707184e8e4eefb46400b5a3774b5f",
     "name": "Kanap Thyoné",
     "price": 1999,
-    "imageUrl": "kanap07.wbmp",
+    "imageUrl": "kanap07.webp",
     "description": "EMauris imperdiet tellus ante, sit amet pretium turpis molestie eu. Vestibulum et egestas eros. Vestibulum non lacus orci.",
     "altTxt": "Photo d'un canapé rouge, deux places"
   },
@@ -67,7 +67,7 @@ const products = [
     "_id": "a6ec5b49bd164d7fbe10f37b6363f9fb",
     "name": "Kanap orthosie",
     "price": 3999,
-    "imageUrl": "kanap08.wbmp",
+    "imageUrl": "kanap08.webp",
     "description": "Mauris molestie laoreet finibus. Aenean scelerisque convallis lacus at dapibus. Morbi imperdiet enim metus rhoncus.",
     "altTxt": "Photo d'un canapé rose, trois places"
   }
