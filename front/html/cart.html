@@ -10,8 +10,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" as="style" onload="this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
-        <link href="../css/style.css" rel="stylesheet" />
-    <link href="../css/cart.css" rel="stylesheet" />
+    <link rel="preload" href="style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="style.css"></noscript>
+        <link href="../css/cart.css" rel="stylesheet" />
+        <script defer src="../js/cart.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
@@ -134,6 +136,5 @@
         </div>
       </div>
     </footer>
-  <script src="../js/cart.js"></script>
   </body>
 </html>
