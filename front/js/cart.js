@@ -181,62 +181,123 @@ function removeItemFromCart(itemId, itemColor) {
 // Démarrer l'initialisation du panier
 initializeCart();
 
+
 const form = document.querySelector("form");
-form.addEventListener("submit", e => {
-    formSubmitted(e)
-});
-const inputs = document.querySelectorAll('input[type="text"], input[type="email"]'),
-    errorDisplay = (e, t, a) => {
-        let r = document.getElementById(e + "ErrorMsg");
-        a ? r.textContent = "" : r.textContent = t
-    },
-    firstNameChecker = e => e.length > 48 || !e.match(/^[a-zA-Z'-]*$/) ? (errorDisplay("firstName", "Le pr\xe9nom doit comporter moins de 48 caract\xe8res"), !1) : (errorDisplay("firstName", "", !0), e),
-    lastNameChecker = e => e.length > 47 || !e.match(/^[a-zA-Z'-]*$/) ? (errorDisplay("lastName", "Le nom doit comporter moins de 48 caract\xe8res"), !1) : (errorDisplay("lastName", "", !0), e),
-    addressChecker = e => e.length > 60 || !e.match(/^[a-zA-Z0-9\s,'-éèàêûôîäëüöç]*$/) ? (errorDisplay("address", "L'adresse doit comporter moins de 60 caract\xe8res et ne peut pas contenir de caract\xe8res sp\xe9ciaux", !1), !1) : (errorDisplay("address", "", !0), !0),
-    cityChecker = e => e.length < 2 || e.length > 48 || !e.match(/^[a-zA-Z\s'-]*$/) ? (errorDisplay("city", "La ville doit comporter entre 2 et 48 caract\xe8res", !1), !1) : (errorDisplay("city", "", !0), !0),
-    emailChecker = e => e.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/) ? (errorDisplay("email", "", !0), !0) : (errorDisplay("email", "L'email n'est pas valide", !1), !1);
 
-function formSubmitted(e) {
-    e.preventDefault();
-    let t = !0,
-        a = e.target.elements.firstName.value,
-        r = e.target.elements.lastName.value,
-        l = e.target.elements.address.value,
-        d = e.target.elements.city.value,
-        o = e.target.elements.email.value;
-    if (t &&= firstNameChecker(a), t &&= lastNameChecker(r), t &&= addressChecker(l), t &&= t &&= cityChecker, cityChecker(d), t &&= emailChecker(o)) {
-        let c = {
-                firstName: a,
-                lastName: r,
-                address: l,
-                city: d,
-                email: o
-            },
-            s = {
-                contact: c,
-                products: addedProducts.map(e => e.id)
-            };
-        console.log("Form is valid", c), sendToServer(s)
-    } else console.error("Form is invalid")
+// Affiche un message d'erreur sous l'input concerné
+function displayError(inputId, message, isValid) {
+    const errorMsg = document.getElementById(inputId + "ErrorMsg");
+    errorMsg.textContent = isValid ? "" : message;
 }
-console.log(addedProducts[0].id);
-const products = addedProducts.map(e => e.id);
 
-function sendToServer(e) {
+// Vérifie la validité du prénom
+function validateFirstName(firstName) {
+    if (firstName.length > 48 || !firstName.match(/^[a-zA-Z'-]*$/)) {
+        displayError("firstName", "Le prénom doit comporter moins de 48 caractères et ne peut contenir que des lettres, des apostrophes ou des tirets.", false);
+        return false;
+    } else {
+        displayError("firstName", "", true);
+        return true;
+    }
+}
+
+// Vérifie la validité du nom
+function validateLastName(lastName) {
+    if (lastName.length > 47 || !lastName.match(/^[a-zA-Z'-]*$/)) {
+        displayError("lastName", "Le nom doit comporter moins de 48 caractères et ne peut contenir que des lettres, des apostrophes ou des tirets.", false);
+        return false;
+    } else {
+        displayError("lastName", "", true);
+        return true;
+    }
+}
+
+// Vérifie la validité de l'adresse
+function validateAddress(address) {
+    if (address.length > 60 || !address.match(/^[a-zA-Z0-9\s,'-éèàêûôîäëüöç]*$/)) {
+        displayError("address", "L'adresse doit comporter moins de 60 caractères et ne peut pas contenir de caractères spéciaux.", false);
+        return false;
+    } else {
+        displayError("address", "", true);
+        return true;
+    }
+}
+
+// Vérifie la validité de la ville
+function validateCity(city) {
+    if (city.length < 2 || city.length > 48 || !city.match(/^[a-zA-Z\s'-]*$/)) {
+        displayError("city", "La ville doit comporter entre 2 et 48 caractères et ne peut contenir que des lettres, des apostrophes ou des tirets.", false);
+        return false;
+    } else {
+        displayError("city", "", true);
+        return true;
+    }
+}
+
+// Vérifie la validité de l'email
+function validateEmail(email) {
+    if (!email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+        displayError("email", "L'email n'est pas valide.", false);
+        return false;
+    } else {
+        displayError("email", "", true);
+        return true;
+    }
+}
+
+// Gère la soumission du formulaire
+function handleFormSubmission(event) {
+    event.preventDefault();
+
+    const firstName = form.elements.firstName.value;
+    const lastName = form.elements.lastName.value;
+    const address = form.elements.address.value;
+    const city = form.elements.city.value;
+    const email = form.elements.email.value;
+
+    const isFormValid = 
+        validateFirstName(firstName) &&
+        validateLastName(lastName) &&
+        validateAddress(address) &&
+        validateCity(city) &&
+        validateEmail(email);
+
+    if (isFormValid) {
+        const contact = { firstName, lastName, address, city, email };
+        const products = cartItems.map(item => item.id);
+        const order = { contact, products };
+
+        console.log("Form is valid", contact);
+        sendToServer(order);
+    } else {
+        console.error("Form is invalid");
+    }
+}
+
+// Ajoute l'écouteur d'événement de soumission au formulaire
+form.addEventListener("submit", handleFormSubmission);
+
+// Envoie les données de la commande au serveur
+function sendToServer(order) {
     fetch("https://kanap-kue4.onrender.com/api/products/order", {
         method: "POST",
-        body: JSON.stringify(e),
+        body: JSON.stringify(order),
         headers: {
             "Content-Type": "application/json"
         }
-    }).then(async e => {
-        if (!e.ok) throw Error(`HTTP error! status: ${e.status}`);
-        return e.json()
-    }).then(e => {
-        let t = e.orderId;
-        window.location.href = `./confirmation.html?orderId=${t}`
-    }).catch(e => {
-        console.error("Error from catch", e), alert(`Error: ${e}`)
     })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        const orderId = data.orderId;
+        window.location.href = `./confirmation.html?orderId=${orderId}`;
+    })
+    .catch(error => {
+        console.error("Error from catch", error);
+        alert(`Error: ${error.message}`);
+    });
 }
- console.log(products);
