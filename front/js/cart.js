@@ -1,127 +1,186 @@
+// Variables globales pour stocker les données du panier et les informations sur les produits
+let cartItems = JSON.parse(localStorage.getItem("products") || '[]');
+let productData = [];
+
+// Élément du DOM où les produits du panier seront ajoutés
 const productsLocation = document.getElementById("cart__items");
-console.log(productsLocation);
 const totalLocation = document.getElementById("totalPrice");
-console.log(totalLocation);
-const cartOrderElem = document.querySelector(".cart__order"),
-    getLocalStorage = localStorage.getItem("products");
-console.log(getLocalStorage);
-let cartItems = [];
 
-function emptyCart() {
-    {
-        productsLocation.innerHTML = "<p id = 'emptyCartMsg'>Votre panier est vide</p>";
-        let e = document.getElementById("emptyCartMsg");
-        e.style.textAlign = "center", cartOrderElem.style.display = "none"
-    }
-}
-null !== getLocalStorage && (cartItems = JSON.parse(getLocalStorage)), console.log(cartItems), null == getLocalStorage && emptyCart();
-const addedProducts = JSON.parse(localStorage.getItem("products") || []);
-async function fetchProduct() {
-    await fetch("https://kanap-kue4.onrender.com/api/products").then(e => e.json()).then(e => productData = e).catch(e => console.error("An error occurred:", e)), console.log(productData)
-}
-fetchProduct();
-let datas = [];
-async function mergeApiAndLocalData() {
-    await fetchProduct();
-    for (let e = 0; e < addedProducts.length; e++) {
-        let t = !1;
-        for (let a = 0; a < productData.length; a++)
-            if (productData[a]._id === addedProducts[e].id) {
-                let r = {
-                    ...addedProducts[e],
-                    ...productData[a]
-                };
-                datas.push(r), t = !0
-            }
-    }
-    return datas
+// Fonction pour afficher un message lorsque le panier est vide
+function displayEmptyCart() {
+    productsLocation.innerHTML = "<p id='emptyCartMsg'>Votre panier est vide</p>";
+    document.getElementById("emptyCartMsg").style.textAlign = "center";
+    document.querySelector(".cart__order").style.display = "none";
 }
 
-function calculPrice() {
-    let e = 0;
-    for (let t = 0; t < datas.length; t++) e += datas[t].price * datas[t].quantity;
-    console.log(e), totalLocation.innerHTML = ` ${e}`
-}
-async function productDisplay() {
-    await fetchProduct();
-    let e = document.createDocumentFragment();
-    for (let t = 0; t < datas.length; t++) {
-        let a = datas[t].color,
-            r = datas[t].quantity,
-            l = datas[t].id;
-        datas[t]._id;
-        let d = datas[t].name,
-            o = datas[t].imageUrl,
-            c = datas[t].altTxt,
-            s = datas[t].price,
-            n = document.createElement("article");
-        n.className = "cart__item", n.setAttribute("data-id", l), n.setAttribute("data-color", a);
-        let i = document.createElement("div");
-        i.className = "cart__item__img";
-        let m = document.createElement("img");
-        m.src = o.replace("http://", "https://"), m.alt = c, i.appendChild(m), n.appendChild(i);
-        let p = document.createElement("div");
-        p.className = "cart__item__content";
-        let u = document.createElement("div");
-        u.className = "cart__item__content__description";
-        let h = document.createElement("h2");
-        h.textContent = d;
-        let g = document.createElement("p");
-        g.textContent = a;
-        let y = document.createElement("p");
-        y.textContent = `${s}€`, u.appendChild(h), u.appendChild(g), u.appendChild(y), p.appendChild(u);
-        let f = document.createElement("div");
-        f.className = "cart__item__content__settings";
-        let C = document.createElement("div");
-        C.className = "cart__item__content__settings__quantity";
-        let $ = document.createElement("p");
-        $.textContent = "Qt\xe9 :  ";
-        let v = document.createElement("input");
-        v.type = "number", v.className = "itemQuantity", v.name = "itemQuantity", v.min = "1", v.max = "100", v.value = r, C.appendChild($), C.appendChild(v), f.appendChild(C);
-        let E = document.createElement("div");
-        E.className = "cart__item__content__settings__delete";
-        let L = document.createElement("p");
-        L.className = "deleteItem", L.textContent = "Supprimer", E.appendChild(L), f.appendChild(E), p.appendChild(f), n.appendChild(p), e.appendChild(n), calculPrice()
+// Récupérer les données des produits de l'API et les fusionner avec les données du localStorage
+async function fetchAndMergeProductData() {
+    try {
+        const response = await fetch("https://kanap-kue4.onrender.com/api/products");
+        productData = await response.json();
+        cartItems = cartItems.map(cartItem => ({
+            ...cartItem,
+            ...productData.find(p => p._id === cartItem.id)
+        }));
+    } catch (error) {
+        console.error("An error occurred:", error);
+        // Afficher un message d'erreur ou gérer l'erreur d'une autre manière
     }
-    productsLocation.appendChild(e)
 }
-mergeApiAndLocalData(), productDisplay(), setTimeout(() => {
-    let e = document.querySelectorAll(".itemQuantity");
-    console.log(e);
-    let t = document.querySelectorAll(".deleteItem");
-    console.log(t);
-    for (let a = 0; a < e.length; a++) {
-        let r = e[a].closest(".cart__item"),
-            l = r.dataset.id,
-            d = r.dataset.color;
-        console.log(l, d), e[a].addEventListener("change", function() {
-            let e = Number(this.value);
-            for (let t = 0; t < addedProducts.length; t++)
-                if (addedProducts[t].id === l && addedProducts[t].color === d) {
-                    if (addedProducts[t].quantity = e, e < 1 || e > 100) {
-                        alert("Veuillez s\xe9lectionner une quantit\xe9 entre 1 et 100."), this.value = datas.find(e => e.id === l && e.color === d).quantity;
-                        return
-                    }
-                    localStorage.setItem("products", JSON.stringify(addedProducts));
-                    for (let a = 0; a < datas.length; a++)
-                        if (datas[a].id === l && datas[a].color === d) {
-                            datas[a].quantity = e;
-                            break
-                        } calculPrice(), console.log(totalLocation)
-                }
-        })
+
+// Fonction pour calculer et afficher le prix total
+function calculateAndDisplayTotalPrice() {
+    const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    totalLocation.textContent = `${totalPrice}`;
+}
+
+// Fonction pour créer et retourner un élément de produit du panier
+function createCartItemElement(item) {
+    // Création de l'élément article du panier
+    const article = document.createElement("article");
+    article.className = "cart__item";
+    article.dataset.id = item.id;
+    article.dataset.color = item.color;
+
+    // Création de l'élément de l'image du produit
+    const divImg = document.createElement("div");
+    divImg.className = "cart__item__img";
+    const img = document.createElement("img");
+    img.src = item.imageUrl;
+    img.alt = item.altTxt;
+    divImg.appendChild(img);
+
+    // Création de la description du produit
+    const divContent = document.createElement("div");
+    divContent.className = "cart__item__content";
+    const divDescription = document.createElement("div");
+    divDescription.className = "cart__item__content__description";
+    
+    const h2 = document.createElement("h2");
+    h2.textContent = item.name;
+    const pColor = document.createElement("p");
+    pColor.textContent = item.color;
+    const pPrice = document.createElement("p");
+    pPrice.textContent = `${item.price} €`;
+
+    // Assemblage des éléments de la description
+    divDescription.appendChild(h2);
+    divDescription.appendChild(pColor);
+    divDescription.appendChild(pPrice);
+
+    // Création de la section de gestion de la quantité de produit
+    const divSettings = document.createElement("div");
+    divSettings.className = "cart__item__content__settings";
+    const divQuantity = document.createElement("div");
+    divQuantity.className = "cart__item__content__settings__quantity";
+    const pQuantity = document.createElement("p");
+    pQuantity.textContent = "Qté : ";
+    const inputQuantity = document.createElement("input");
+    inputQuantity.type = "number";
+    inputQuantity.className = "itemQuantity";
+    inputQuantity.name = "itemQuantity";
+    inputQuantity.min = "1";
+    inputQuantity.max = "100";
+    inputQuantity.value = item.quantity;
+
+    // Assemblage des éléments de la quantité
+    divQuantity.appendChild(pQuantity);
+    divQuantity.appendChild(inputQuantity);
+
+    // Création du bouton de suppression
+    const divDelete = document.createElement("div");
+    divDelete.className = "cart__item__content__settings__delete";
+    const pDelete = document.createElement("p");
+    pDelete.className = "deleteItem";
+    pDelete.textContent = "Supprimer";
+
+    // Assemblage des éléments des réglages
+    divDelete.appendChild(pDelete);
+    divSettings.appendChild(divQuantity);
+    divSettings.appendChild(divDelete);
+
+    // Assemblage final des éléments du produit
+    divContent.appendChild(divDescription);
+    divContent.appendChild(divSettings);
+    article.appendChild(divImg);
+    article.appendChild(divContent);
+
+    return article;
+}
+
+
+// Fonction pour afficher les produits dans le panier
+function displayCartItems() {
+    if (cartItems.length === 0) {
+        displayEmptyCart();
+        return;
     }
-    for (let o = 0; o < t.length; o++) t[o].addEventListener("click", function e() {
-        let t = this.closest(".cart__item"),
-            a = t.dataset.id,
-            r = t.dataset.color;
-        for (let l = 0; l < datas.length; l++)
-            if (datas[l].id === a && datas[l].color === r) {
-                datas.splice(l, 1), localStorage.setItem("products", JSON.stringify(addedProducts)), calculPrice(), console.log(datas);
-                break
-            } localStorage.setItem("products", JSON.stringify(datas)), 0 === datas.length && (localStorage.removeItem("products"), emptyCart()), t.remove(), calculPrice()
-    })
-}, 2e3);
+
+    const fragment = document.createDocumentFragment();
+    cartItems.forEach(item => {
+        const cartItemElement = createCartItemElement(item);
+        fragment.appendChild(cartItemElement);
+    });
+    productsLocation.appendChild(fragment);
+    calculateAndDisplayTotalPrice();
+}
+
+// Fonction initiale pour démarrer le processus
+async function initializeCart() {
+    await fetchAndMergeProductData();
+    displayCartItems();
+    setupEventListeners();
+}
+
+// Fonction pour configurer les écouteurs d'événements (pour la quantité, la suppression, etc.)
+function setupEventListeners() {
+    // Écouteur pour les changements de quantité
+    productsLocation.addEventListener('change', function(event) {
+        if (event.target.classList.contains('itemQuantity')) {
+            const newQuantity = event.target.value;
+            const itemId = event.target.closest('.cart__item').dataset.id;
+            const itemColor = event.target.closest('.cart__item').dataset.color;
+            updateQuantity(itemId, itemColor, newQuantity);
+        }
+    });
+
+    // Écouteur pour les boutons de suppression
+    productsLocation.addEventListener('click', function(event) {
+        if (event.target.classList.contains('deleteItem')) {
+            const itemId = event.target.closest('.cart__item').dataset.id;
+            const itemColor = event.target.closest('.cart__item').dataset.color;
+            removeItemFromCart(itemId, itemColor);
+        }
+    });
+}
+
+// Fonction pour mettre à jour la quantité d'un article dans le panier
+function updateQuantity(itemId, itemColor, newQuantity) {
+    const itemIndex = cartItems.findIndex(item => item.id === itemId && item.color === itemColor);
+    if (itemIndex !== -1) {
+        cartItems[itemIndex].quantity = parseInt(newQuantity, 10);
+        localStorage.setItem('products', JSON.stringify(cartItems));
+        calculateAndDisplayTotalPrice();
+    }
+}
+
+// Fonction pour retirer un article du panier
+function removeItemFromCart(itemId, itemColor) {
+    cartItems = cartItems.filter(item => !(item.id === itemId && item.color === itemColor));
+    if (cartItems.length > 0) {
+        localStorage.setItem('products', JSON.stringify(cartItems));
+    } else {
+        localStorage.removeItem('products');
+        displayEmptyCart();
+    }
+    calculateAndDisplayTotalPrice();
+    document.querySelector(`[data-id="${itemId}"][data-color="${itemColor}"]`).remove();
+}
+
+
+// Démarrer l'initialisation du panier
+initializeCart();
+
 const form = document.querySelector("form");
 form.addEventListener("submit", e => {
     formSubmitted(e)
